@@ -1,8 +1,6 @@
 import random
 import json
-
-colors = ['B', 'R', 'G', 'Y'] # Blue, Red, Green, Yellow
-N = 100 # Number of initial solutions
+import copy
 
 def generate_initial_solutions():
     """
@@ -21,14 +19,27 @@ def generate_initial_solutions():
 
 def fitness_function(solutions):
     """
-    Calculate the fitness of each solution.
+    Calculate the fitness of each solution and return a list of fitness values.
     """
     fitness = 0
     fitness_list = []
     
-    for node, neighbors in graph_dict.items():
-        pass
-        
+    for solution in solutions:
+        dic = copy.deepcopy(graph_dict)
+        print(graph_dict)
+        for i in range(1,17):
+            node_color = solution[i-1]
+            neighbors = dic[i]
+            for neighbor in neighbors:
+                neighbor_color = solution[neighbor-1]
+                if neighbor_color == node_color:
+                    #print(f'Solution: {solutions.index(solution)+1}')
+                    #print(f'Node {i} color: {node_color}, Neighbor {neighbor} color: {neighbor_color}')
+                    fitness += 1
+                    dic[neighbor].remove(i)
+        fitness_list.append(fitness)
+        fitness = 0
+    return fitness_list
 
 def import_graph():
     """
@@ -42,7 +53,12 @@ def import_graph():
 
 
 if __name__ == '__main__':
-    global graph_dict
-    initial_solutions = generate_initial_solutions()
+    colors = ['B', 'R', 'G', 'Y'] # Blue, Red, Green, Yellow
+    N = 2 # Number of initial solutions
     graph_dict = import_graph()
+    initial_solutions = generate_initial_solutions()
+    fitness_list = fitness_function(initial_solutions)
+    
+    #print(initial_solutions)
+    print(fitness_list)
     
