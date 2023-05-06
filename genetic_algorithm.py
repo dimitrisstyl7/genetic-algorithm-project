@@ -18,7 +18,6 @@ def generate_initial_solutions():
     """
     initial_solutions = []
 
-    # Generate N random solutions
     for _ in range(N):
         string = ''
         for _ in range(16):
@@ -71,13 +70,13 @@ def tournament_selection(fitness_list, number_of_renewed_solutions):
     tournament_size = 3
     mating_pool = []
     pair = []
-    sum_fitness = sum(fitness_list)
+    sum_fitness = int(sum(fitness_list))
     
     def select_a_competitor():
         """
         Select a competitor from the tournament using cumulative probability distribution.
         """
-        rnd_num = rnd.random() # Random number between 0 and 1
+        rnd_num = rnd.uniform(0, cpd[-1]) # Random number between 0 and cpd[-1], where cpd[-1] is the highest value we can get.
         for i in range(len(cpd)):
             if rnd_num <= cpd[i]:
                 selected_parent = competitors[cumulative_probality_distribution.index(cpd[i])]
@@ -87,29 +86,48 @@ def tournament_selection(fitness_list, number_of_renewed_solutions):
                     cpd.pop(i)
                     return select_a_competitor()
                         
-    for _ in range(number_of_renewed_solutions):
+    for _ in range(number_of_renewed_solutions*2):
         competitors = rnd.sample(range(len(fitness_list)), tournament_size)
         fitnesses = [fitness_list[competitor] for competitor in competitors]
         relative_fitnesses = [fitness/sum_fitness for fitness in fitnesses]
         cumulative_probality_distribution = [sum(relative_fitnesses[:i+1]) for i in range(len(relative_fitnesses))]
         cpd = sorted(cumulative_probality_distribution)
         selected_parent = select_a_competitor()
+        
+        if len(pair) < 2:
+            pair.append(selected_parent)
+        
         if len(pair) == 2:
+            while pair in mating_pool or pair[::-1] in mating_pool:
+                pair = []
+                pair.append(selected_parent)
+                selected_parent = select_a_competitor()
+                pair.append(selected_parent)
             mating_pool.append(pair)
             pair = []
-        else:
-            pair.append(selected_parent)
-            
+
     return mating_pool
+
+def one_point_crossover(solutions, mating_pool):
+    """
+    One-point crossover.
+    """
+    new_solutions = []
+    for pair in mating_pool:
+        crossover_point = rnd.randint(1, 15)
+        new_solutions.append(solutions[pair[0]][:crossover_point] + solutions[pair[1]][crossover_point:])
+        new_solutions.append(solutions[pair[1]][:crossover_point] + solutions[pair[0]][crossover_point:])
+    return new_solutions
 
 if __name__ == '__main__':
     colors = ['B', 'R', 'G', 'Y'] # Blue, Red, Green, Yellow
-    N = 5 # Number of initial solutions
+    N = 20 # Number of initial solutions
     graph_dict = import_graph()
     initial_solutions = generate_initial_solutions()
     fitness_list = fitness_function(initial_solutions)
     number_of_renewed_solutions, directly_passed_solutions = partial_population_renewal()
-    print(f'Number of renewed solutions: {number_of_renewed_solutions}')
     mating_pool = tournament_selection(fitness_list, number_of_renewed_solutions)
+    #print(f'Number of renewed solutions: {number_of_renewed_solutions}')
     #print(mating_pool)
+    new_solutions = one_point_crossover(initial_solutions, mating_pool)
     
