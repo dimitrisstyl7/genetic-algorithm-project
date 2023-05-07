@@ -152,7 +152,7 @@ def elitism(solutions, fitness_list):
 
 def choose_the_remaining_solutions(solutions, crossover_len, mutated_solutions_indexes, elite_solution_index):
     """
-    Choose the remaining solutions from the initial solutions. This implementation
+    Choose the remaining solutions. This implementation
     is choosing the solutions that are not selected for mutation or elitism.
     """
     remaining_solutions_indexes = []
@@ -230,11 +230,10 @@ def solve_graph_coloring_problem():
     solutions = generate_initial_solutions()
     best_solution = None
     best_solution_fitness = 0.0
-    time_limit = 1 # Time limit in seconds.
+    time_limit = 30 # Time limit in seconds.
     start_time = time.time()
     
     while time.time() - start_time < time_limit: # If the time limit is exceeded, the algorithm stops.
-        number_of_renewed_solutions = partial_population_renewal()
         fitness_list = fitness_function(solutions)
         
         if max(fitness_list) == 1.0: # If a solution is found, visualize it and stop the algorithm.
@@ -243,6 +242,7 @@ def solve_graph_coloring_problem():
             visualize_the_solution(best_solution)
             return
         
+        number_of_renewed_solutions = partial_population_renewal()
         mating_pool = tournament_selection(fitness_list, number_of_renewed_solutions)
         crossovered_solutions = one_point_crossover(solutions, mating_pool)
         mutated_solutions, mutated_solutions_indexes = mutation(solutions, fitness_list)
