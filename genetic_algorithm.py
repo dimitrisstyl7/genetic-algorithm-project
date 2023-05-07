@@ -1,6 +1,8 @@
 import random as rnd
 import json
-
+import time
+import networkx as nx
+import matplotlib.pyplot as plt
 
 def import_graph():
     """
@@ -19,10 +21,10 @@ def generate_initial_solutions():
     initial_solutions = []
 
     for _ in range(N):
-        string = ''
+        solution = ''
         for _ in range(16):
-            string += rnd.choice(colors)
-        initial_solutions.append(string)
+            solution += rnd.choice(colors)
+        initial_solutions.append(solution)
 
     return initial_solutions
 
@@ -146,6 +148,7 @@ def elitism(solutions, fitness_list):
     """
     elite_solution = solutions[fitness_list.index(max(fitness_list))]
     elite_solution_index = fitness_list.index(max(fitness_list))
+    return elite_solution, elite_solution_index
 
 def choose_the_remaining_solutions(solutions, crossover_len, mutated_solutions_indexes, elite_solution_index):
     """
@@ -165,19 +168,98 @@ def choose_the_remaining_solutions(solutions, crossover_len, mutated_solutions_i
         
     return [solutions[idx] for idx in remaining_solutions_indexes]
 
+def generate_new_population(crossovered_solutions, mutated_solutions, elite_solution, remaining_solutions):
+    """
+    Generate the new population.
+    """
+    new_population = []
+    for solution in crossovered_solutions:
+        new_population.append(solution)
+    for solution in mutated_solutions:
+        new_population.append(solution)
+    for solution in remaining_solutions:
+        new_population.append(solution)
+    new_population.append(elite_solution)
+    
+    return new_population
+
+def visualize_the_solution(solution):
+    """
+    Visualize the solution.
+    """
+    # Initialize an empty graph
+    G = nx.Graph()
+
+    # Add nodes to the graph
+    G.add_nodes_from(graph_dict.keys())
+
+    # Add edges to the graph
+    for node, neighbors in graph_dict.items():
+        for neighbor in neighbors:
+            G.add_edge(node, neighbor)
+
+    # Define the colors of the nodes
+    node_colors = []
+    for i in range(len(solution)):
+        if solution[i] == 'B':
+            node_colors.append('blue')
+        elif solution[i] == 'R':
+            node_colors.append('red')
+        elif solution[i] == 'G':
+            node_colors.append('green')
+        elif solution[i] == 'Y':
+            node_colors.append('yellow')
+
+    # Define the layout of the nodes
+    pos = nx.shell_layout(G)
+
+    # Set the figure size
+    plt.figure(figsize=(8, 6))
+
+    # Draw the graph
+    nx.draw(G,  pos=pos, with_labels=True, node_color=node_colors, edge_color='black', node_size=1000, font_size=12, font_weight='bold')
+
+    # Show the plot
+    plt.show()
+
+def solve_graph_coloring_problem():
+    """
+    Solve the graph coloring problem using genetic algorithm. If solution is not found
+    in the given time limit, the algorithm stops and prints the best solution found.
+    """
+    solutions = generate_initial_solutions()
+    best_solution = None
+    best_solution_fitness = 0.0
+    time_limit = 1 # Time limit in seconds.
+    start_time = time.time()
+    
+    while time.time() - start_time < time_limit: # If the time limit is exceeded, the algorithm stops.
+        number_of_renewed_solutions = partial_population_renewal()
+        fitness_list = fitness_function(solutions)
+        
+        if max(fitness_list) == 1.0: # If a solution is found, visualize it and stop the algorithm.
+            best_solution = solutions[fitness_list.index(max(fitness_list))]
+            print('Solution found!')
+            visualize_the_solution(best_solution)
+            return
+        
+        mating_pool = tournament_selection(fitness_list, number_of_renewed_solutions)
+        crossovered_solutions = one_point_crossover(solutions, mating_pool)
+        mutated_solutions, mutated_solutions_indexes = mutation(solutions, fitness_list)
+        elite_solution, elite_solution_index = elitism(solutions, fitness_list)
+        remaining_solutions = choose_the_remaining_solutions(solutions, len(crossovered_solutions), mutated_solutions_indexes, elite_solution_index)
+        solutions = generate_new_population(crossovered_solutions, mutated_solutions, elite_solution, remaining_solutions)
+        
+        if max(fitness_list) > best_solution_fitness:
+            best_solution = solutions[fitness_list.index(max(fitness_list))]
+            best_solution_fitness = max(fitness_list)
+    
+    print('Solution not found, best solution found is:')
+    visualize_the_solution(best_solution) # If solution is not found, visualize the best solution found.
+
 
 if __name__ == '__main__':
     colors = ['B', 'R', 'G', 'Y'] # Blue, Red, Green, Yellow
-    N = 6 # Number of initial solutions
+    N = 100 # Number of initial solutions
     graph_dict = import_graph()
-    initial_solutions = generate_initial_solutions()
-    number_of_renewed_solutions = partial_population_renewal()
-    
-    fitness_list = fitness_function(initial_solutions)
-    mating_pool = tournament_selection(fitness_list, number_of_renewed_solutions)
-    print(f'Number of renewed solutions: {number_of_renewed_solutions}')
-    crossovered_solutions = one_point_crossover(initial_solutions, mating_pool)
-    mutated_solutions, mutated_solutions_indexes = mutation(initial_solutions, fitness_list)
-    elite_solution, elite_solution_index = elitism(initial_solutions, fitness_list)
-    remaining_solutions = choose_the_remaining_solutions(initial_solutions, len(crossovered_solutions), mutated_solutions_indexes, elite_solution_index)
-    
+    solve_graph_coloring_problem()
