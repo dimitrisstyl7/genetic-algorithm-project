@@ -1,4 +1,6 @@
 # genetic_algorithm_project_2023
+<h3>Πανεπιστήμιο Πειραιώς</h3>
+
 <h3>Τμήμα Πληροφορικής</h3>
 
 <h3>Μάθημα:</h3>&nbsp;&nbsp;Τεχνητή Νοημοσύνη και Έμπειρα Συστήματα / Artificial Intelligence and Expert Systems
