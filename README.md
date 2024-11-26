@@ -1,7 +1,7 @@
 # Graph Coloring with Genetic Algorithms
 
 ## [University of Piraeus](https://www.unipi.gr/en/home/) | [Department of Informatics](https://cs.unipi.gr/en/)
-**Course**: Artificial Intelligence and Expert Systems
+**BSc course**: Artificial Intelligence and Expert Systems
 
 **Semester**: 6
 
@@ -61,7 +61,7 @@ python genetic_algorithm.py
 ```
 
 ## Acknowledgments
-This project was developed as part of the "Artificial Intelligence and Expert Systems" course at the University of Piraeus. Contributions and feedback are always welcome!
+This project was developed as part of the "Artificial Intelligence and Expert Systems" BSc course at the University of Piraeus. Contributions and feedback are always welcome!
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
