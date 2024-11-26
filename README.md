@@ -61,7 +61,7 @@ python genetic_algorithm.py
 ```
 
 ## Acknowledgments
-This project was developed as part of the Artificial Intelligence and Expert Systems course at the University of Piraeus. Contributions and feedback are always welcome!
+This project was developed as part of the "Artificial Intelligence and Expert Systems" course at the University of Piraeus. Contributions and feedback are always welcome!
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
