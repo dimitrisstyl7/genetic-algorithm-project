@@ -25,11 +25,11 @@ The goal is to color a given graph using a limited palette of four colors: blue,
 ## How to Run
 1. **Clone the repository**:
 ```bash
-git clone https://github.com/dimitrisstyl7/genetic-algorithm-project-2023.git
+git clone https://github.com/dimitrisstyl7/genetic-algorithm-project.git
 ```
 2. **Navigate to the project directory**:
 ```bash
-cd genetic-algorithm-project-2023
+cd genetic-algorithm-project
 ```
 3. **Create and activate a virtual environment**:
 
