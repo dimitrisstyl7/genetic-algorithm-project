@@ -60,6 +60,10 @@ _On Windows_
 python genetic_algorithm.py
 ```
 
+## Execution Output Example
+![image](https://github.com/user-attachments/assets/3a0de96a-e538-449a-814e-cb5f7361f6a3)
+
+
 ## Acknowledgments
 This project was developed as part of the "Artificial Intelligence and Expert Systems" BSc course at the University of Piraeus. Contributions and feedback are always welcome!
 
